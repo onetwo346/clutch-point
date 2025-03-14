@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClutchPoint - Client Management Redefined</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00ffcc;
+            text-shadow: 0 0 10px #00ffcc;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.5);
+        }
+        .card h2 {
+            margin-top: 0;
+            color: #00ffcc;
+            font-size: 1.5em;
+        }
+        .card p {
+            margin: 10px 0;
+            color: #ddd;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #00ffcc;
+            color: #0f0c29;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .button:hover {
+            background: #00b894;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ClutchPoint</h1>
+            <p>Your All-in-One Client Management Solution</p>
+        </div>
+        <div class="dashboard">
+            <div class="card">
+                <h2>Project Tracking</h2>
+                <p>Manage tasks, timelines, and progress with ease.</p>
+                <a href="#" class="button">Start Project</a>
+            </div>
+            <div class="card">
+                <h2>Client Communication</h2>
+                <p>Centralized messaging with real-time updates.</p>
+                <a href="#" class="button">Message Client</a>
+            </div>
+            <div class="card">
+                <h2>Document & Image Support</h2>
+                <p>Upload, share, and collaborate securely.</p>
+                <a href="#" class="button">Upload File</a>
+            </div>
+            <div class="card">
+                <h2>Invoicing & Payments</h2>
+                <p>Create invoices and process payments seamlessly.</p>
+                <a href="#" class="button">Create Invoice</a>
+            </div>
+            <div class="card">
+                <h2>Client Management</h2>
+                <p>Personalized client portals and insights.</p>
+                <a href="#" class="button">View Clients</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple interactivity to enhance the UI
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', () => {
+                alert(`Opening ${card.querySelector('h2').textContent} section!`);
+            });
+        });
+    </script>
+</body>
+</html>
