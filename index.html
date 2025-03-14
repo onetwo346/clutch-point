@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClutchPoint - Premium Client Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(145deg, #1a1a2e, #16213e, #0f3460);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: #0f0f1a;
+            padding: 20px;
+            border-right: 1px solid #2a2a4a;
+            position: fixed;
+            height: 100%;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .sidebar h2 {
+            color: #00d4ff;
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+        .sidebar ul li a {
+            color: #b0b0c0;
+            text-decoration: none;
+            font-size: 1.1em;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .sidebar ul li a:hover {
+            background: #00d4ff;
+            color: #0f0f1a;
+            box-shadow: 0 0 10px #00d4ff;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 40px;
+            width: calc(100% - 250px);
+            overflow-y: auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+        .header h1 {
+            font-size: 2em;
+            color: #00d4ff;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+        .header .user-info {
+            font-size: 0.9em;
+            color: #b0b0c0;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.3);
+        }
+        .card h2 {
+            color: #00d4ff;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .card p {
+            color: #b0b0c0;
+            font-size: 0.9em;
+        }
+        .section {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
+            animation: fadeIn 0.5s ease-in;
+        }
+        .section.active {
+            display: block;
+        }
+        .section h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: #e0e0e0;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: #0f0f1a;
+            border: 1px solid #2a2a4a;
+            border-radius: 5px;
+            color: #e0e0e0;
+            font-size: 1em;
+        }
+        .form-group input[type="file"] {
+            padding: 5px;
+        }
+        .button {
+            padding: 10px 20px;
+            background: #00d4ff;
+            color: #0f0f1a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        .button:hover {
+            background: #00b8d4;
+            box-shadow: 0 0 10px #00d4ff;
+        }
+        .list {
+            margin-top: 20px;
+        }
+        .list-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease-in;
+        }
+        .modal-content {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        .modal-content h3 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+        .close {
+            float: right;
+            cursor: pointer;
+            color: #e0e0e0;
+            font-size: 1.5em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>ClutchPoint</h2>
+            <ul>
+                <li><a href="#" data-section="dashboard">Dashboard</a></li>
+                <li><a href="#" data-section="projects">Project Tracking</a></li>
+                <li><a href="#" data-section="communication">Client Communication</a></li>
+                <li><a href="#" data-section="documents">Documents & Images</a></li>
+                <li><a href="#" data-section="invoicing">Invoicing & Payments</a></li>
+                <li><a href="#" data-section="clients">Client Management</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <h1>Welcome to ClutchPoint</h1>
+                <div class="user-info">User: Pro Freelancer | Plan: Premium</div>
+            </div>
+            <div class="section active" id="dashboard">
+                <h2>Dashboard</h2>
+                <div class="dashboard">
+                    <div class="card" data-section="projects">
+                        <h2>Projects</h2>
+                        <p>Manage tasks and timelines effortlessly.</p>
+                    </div>
+                    <div class="card" data-section="communication">
+                        <h2>Communication</h2>
+                        <p>Stay connected with clients in one place.</p>
+                    </div>
+                    <div class="card" data-section="documents">
+                        <h2>Documents</h2>
+                        <p>Securely store and share files.</p>
+                    </div>
+                    <div class="card" data-section="invoicing">
+                        <h2>Invoicing</h2>
+                        <p>Generate and track payments seamlessly.</p>
+                    </div>
+                    <div class="card" data-section="clients">
+                        <h2>Clients</h2>
+                        <p>Organize and manage client relationships.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section" id="projects">
+                <h2>Project Tracking</h2>
+                <button class="button" onclick="openModal('project-modal')">Create Project</button>
+                <div class="list" id="project-list">
+                    <!-- Projects will be added here -->
+                </div>
+            </div>
+            <div class="section" id="communication">
+                <h2>Client Communication</h2>
+                <button class="button" onclick="openModal('message-modal')">Send Message</button>
+                <div class="list" id="message-list">
+                    <!-- Messages will be added here -->
+                </div>
+            </div>
+            <div class="section" id="documents">
+                <h2>Documents & Images</h2>
+                <button class="button" onclick="openModal('document-modal')">Upload File</button>
+                <div class="list" id="document-list">
+                    <!-- Documents will be added here -->
+                </div>
+            </div>
+            <div class="section" id="invoicing">
+                <h2>Invoicing & Payments</h2>
+                <button class="button" onclick="openModal('invoice-modal')">Create Invoice</button>
+                <div class="list" id="invoice-list">
+                    <!-- Invoices will be added here -->
+                </div>
+            </div>
+            <div class="section" id="clients">
+                <h2>Client Management</h2>
+                <button class="button" onclick="openModal('client-modal')">Add Client</button>
+                <div class="list" id="client-list">
+                    <!-- Clients will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for each feature -->
+    <div class="modal" id="project-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('project-modal')">&times;</span>
+            <h3>Create Project</h3>
+            <div class="form-group">
+                <label for="project-name">Project Name</label>
+                <input type="text" id="project-name" placeholder="Enter project name">
+            </div>
+            <div class="form-group">
+                <label for="project-deadline">Deadline</label>
+                <input type="date" id="project-deadline">
+            </div>
+            <button class="button" onclick="addProject()">Create</button>
+        </div>
+    </div>
+    <div class="modal" id="message-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('message-modal')">&times;</span>
+            <h3>Send Message</h3>
+            <div class="form-group">
+                <label for="message-client">Client</label>
+                <select id="message-client">
+                    <option value="client1">Client 1</option>
+                    <option value="client2">Client 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="message-content">Message</label>
+                <textarea id="message-content" rows="4" placeholder="Write your message"></textarea>
+            </div>
+            <button class="button" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <div class="modal" id="document-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('document-modal')">&times;</span>
+            <h3>Upload File</h3>
+            <div class="form-group">
+                <label for="document-file">Select File</label>
+                <input type="file" id="document-file">
+            </div>
+            <button class="button" onclick="uploadDocument()">Upload</button>
+        </div>
+    </div>
+    <div class="modal" id="invoice-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('invoice-modal')">&times;</span>
+            <h3>Create Invoice</h3>
+            <div class="form-group">
+                <label for="invoice-client">Client</label>
+                <select id="invoice-client">
+                    <option value="client1">Client 1</option>
+                    <option value="client2">Client 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="invoice-amount">Amount</label>
+                <input type="number" id="invoice-amount" placeholder="Enter amount">
+            </div>
+            <button class="button" onclick="createInvoice()">Generate</button>
+        </div>
+    </div>
+    <div class="modal" id="client-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('client-modal')">&times;</span>
+            <h3>Add Client</h3>
+            <div class="form-group">
+                <label for="client-name">Client Name</label>
+                <input type="text" id="client-name" placeholder="Enter client name">
+            </div>
+            <div class="form-group">
+                <label for="client-email">Email</label>
+                <input type="email" id="client-email" placeholder="Enter client email">
+            </div>
+            <button class="button" onclick="addClient()">Add</button>
+        </div>
+    </div>
+
+    <script>
+        // Navigation between sections
+        document.querySelectorAll('.sidebar a, .card').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = item.getAttribute('data-section');
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section).classList.add('active');
+            });
+        });
+
+        // Modal handling
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Project Tracking
+        function addProject() {
+            const name = document.getElementById('project-name').value;
+            const deadline = document.getElementById('project-deadline').value;
+            if (name && deadline) {
+                const list = document.getElementById('project-list');
+                const item = document.createElement('div');
+                item.classList.add('list-item');
+                item.innerHTML = `<span>${name} (Due: ${deadline})</span><span>Status: Active</span>`;
+                list.appendChild(item);
+                closeModal('project-modal');
+                document.getElementById('project-name').value = '';
+                document.getElementById('project-deadline').value = '';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        // Client Communication
+        function sendMessage() {
+            const client = document.getElementById('message-client').value;
+            const content = document.getElementById('message-content').value;
+            if (client && content) {
+                const list = document.getElementById('message-list');
+                const item = document.createElement('div');
+                item.classList.add('list-item');
+                item.innerHTML = `<span>To: ${client}</span><span>${content}</span>`;
+                list.appendChild(item);
+                closeModal('message-modal');
+                document.getElementById('message-content').value = '';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        // Document & Image Support
+        function uploadDocument() {
+            const fileInput = document.getElementById('document-file');
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                const list = document.getElementById('document-list');
+                const item = document.createElement('div');
+                item.classList.add('list-item');
+                item.innerHTML = `<span>File: ${fileName}</span><span>Uploaded</span>`;
+                list.appendChild(item);
+                closeModal('document-modal');
+                fileInput.value = '';
+            } else {
+                alert('Please select a file.');
+            }
+        }
+
+        // Invoicing & Payments
+        function createInvoice() {
+            const client = document.getElementById('invoice-client').value;
+            const amount = document.getElementById('invoice-amount').value;
+            if (client && amount) {
+                const list = document.getElementById('invoice-list');
+                const item = document.createElement('div');
+                item.classList.add('list-item');
+                item.innerHTML = `<span>Invoice for ${client}</span><span>$${amount} - Pending</span>`;
+                list.appendChild(item);
+                closeModal('invoice-modal');
+                document.getElementById('invoice-amount').value = '';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        // Client Management
+        function addClient() {
+            const name = document.getElementById('client-name').value;
+            const email = document.getElementById('client-email').value;
+            if (name && email) {
+                const list = document.getElementById('client-list');
+                const item = document.createElement('div');
+                item.classList.add('list-item');
+                item.innerHTML = `<span>${name}</span><span>${email}</span>`;
+                list.appendChild(item);
+                closeModal('client-modal');
+                document.getElementById('client-name').value = '';
+                document.getElementById('client-email').value = '';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+    </script>
+</body>
+</html>
